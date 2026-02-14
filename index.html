@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Logistics | Rastreo de Envío Internacional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .timeline-line { background: linear-gradient(to bottom, #3b82f6 50%, #e5e7eb 50%); }
+        .tracking-input:focus { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2); }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); opacity: 1; }
+            80%, 100% { transform: scale(2); opacity: 0; }
+        }
+        .slide-in { animation: slideIn 0.6s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white p-2 rounded-lg">
+                        <i data-lucide="globe" class="w-8 h-8 text-blue-900"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">GLOBAL LOGISTICS</h1>
+                        <p class="text-xs text-blue-100 tracking-widest">SOLUCIONES INTEGRALES DE TRANSPORTE</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    <a href="#" class="hover:text-blue-200 transition">Inicio</a>
+                    <a href="#" class="hover:text-blue-200 transition">Servicios</a>
+                    <a href="#" class="hover:text-blue-200 transition">Rastreo</a>
+                </nav>
+                <button class="md:hidden text-white" onclick="toggleMenu()">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-blue-900 text-white p-4">
+        <a href="#" class="block py-2 border-b border-blue-800">Inicio</a>
+        <a href="#" class="block py-2 border-b border-blue-800">Servicios</a>
+        <a href="#" class="block py-2">Rastreo</a>
+    </div>
+
+    <!-- Search Section -->
+    <section class="relative bg-blue-900 text-white py-12 overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <img src="https://static.photos/industry/1200x400/1" alt="Logistics Background" class="w-full h-full object-cover">
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-3xl mx-auto text-center slide-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Rastrea tu Envío Internacional</h2>
+                <p class="text-blue-100 mb-8">Seguimiento en tiempo real de tus cargas marítimas y aéreas</p>
+                
+                <div class="bg-white p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
+                    <div class="flex-1 relative">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input type="text" value="PY-2026-001948-CIF" class="tracking-input w-full pl-12 pr-4 py-4 rounded-xl text-gray-800 font-mono font-semibold focus:outline-none" readonly>
+                    </div>
+                    <button onclick="refreshTracking()" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        Actualizar
+                    </button>
+                </div>
+                
+                <div class="mt-4 flex items-center justify-center gap-4 text-sm text-blue-100">
+                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-4 h-4"></i> Seguro incluido (CIF)</span>
+                    <span class="flex items-center gap-1"><i data-lucide="anchor" class="w-4 h-4"></i> Transporte Marítimo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Tracking Content -->
+    <main class="container mx-auto px-4 py-8 -mt-8 relative z-20">
+        
+        <!-- Status Overview Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 slide-in">
+            <div class="glass-effect rounded-xl p-6 shadow-lg border-l-4 border-blue-500 hover-lift">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-500 text-sm font-medium">Estado Actual</span>
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold">TRANSITO</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">En Tránsito Internacional</h3>
+                <p class="text-sm text-gray-500 mt-1">Última actualización: Hace 2 horas</p>
+            </div>
+            
+            <div class="glass-effect rounded-xl p-6 shadow-lg border-l-4 border-orange-500 hover-lift">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-500 text-sm font-medium">Origen</span>
+                    <i data-lucide="map-pin" class="w-4 h-4 text-orange-500"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">Shanghai, China</h3>
+                <p class="text-sm text-gray-500 mt-1">Puerto de Carga</p>
+            </div>
+            
+            <div class="glass-effect rounded-xl p-6 shadow-lg border-l-4 border-green-500 hover-lift">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-500 text-sm font-medium">Destino</span>
+                    <i data-lucide="flag" class="w-4 h-4 text-green-500"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">Asunción, Paraguay</h3>
+                <p class="text-sm text-gray-500 mt-1">Puerto de Descarga</p>
+            </div>
+            
+            <div class="glass-effect rounded-xl p-6 shadow-lg border-l-4 border-purple-500 hover-lift">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-500 text-sm font-medium">Tipo de Carga</span>
+                    <i data-lucide="package" class="w-4 h-4 text-purple-500"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">FCL - 20ft Container</h3>
+                <p class="text-sm text-gray-500 mt-1">CIF Incoterm</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Timeline & Details -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Visual Timeline -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="route" class="w-6 h-6 text-blue-600"></i>
+                        Progreso del Envío
+                    </h3>
+                    
+                    <div class="relative">
+                        <!-- Timeline Line -->
+                        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                        
+                        <!-- Steps -->
+                        <div class="space-y-8">
+                            <!-- Step 1: Completed -->
+                            <div class="relative flex gap-6">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-bold text-gray-800">Reserva Confirmada</h4>
+                                        <span class="text-sm text-gray-500">19 Ene 2026</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Documentación procesada y espacio confirmado en buque MSC GULSUN.</p>
+                                    <div class="mt-2 flex gap-2">
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">BL: MSC-784521</span>
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Booking: 47852</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Completed -->
+                            <div class="relative flex gap-6">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <i data-lucide="ship" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-bold text-gray-800">Carga en Puerto de Origen</h4>
+                                        <span class="text-sm text-gray-500">22 Ene 2026</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Container loaded at Shanghai Yangshan Deep Water Port. Gate in completed.</p>
+                                    <img src="https://static.photos/industry/400x200/5" alt="Port Loading" class="mt-3 rounded-lg w-full md:w-2/3 object-cover h-32">
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Completed -->
+                            <div class="relative flex gap-6">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                                    <i data-lucide="anchor" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-bold text-gray-800">Zarpado - En Tránsito</h4>
+                                        <span class="text-sm text-gray-500">25 Ene 2026</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Buque zarpó de Shanghai con destino a Buenos Aires, Argentina (transbordo).</p>
+                                    <div class="mt-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                        <div class="flex items-center gap-2 text-sm text-blue-800">
+                                            <i data-lucide="navigation" class="w-4 h-4"></i>
+                                            <span>Posición actual: Océano Atlántico (25°S, 35°W)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Current -->
+                            <div class="relative flex gap-6">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg ring-4 ring-blue-100">
+                                    <div class="pulse-ring absolute w-full h-full rounded-full bg-blue-400"></div>
+                                    <i data-lucide="loader-2" class="w-8 h-8 text-white animate-spin"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="font-bold text-blue-600">Tránsito Internacional</h4>
+                                        <span class="text-sm text-blue-600 font-semibold">EN CURSO</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm">Navegación hacia Puerto de Buenos Aires para transbordo a fluvial.</p>
+                                    <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">65% del trayecto marítimo completado</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Pending -->
+                            <div class="relative flex gap-6 opacity-60">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <i data-lucide="arrow-down-circle" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <h4 class="font-bold text-gray-600">Transbordo - Buenos Aires</h4>
+                                    <p class="text-gray-500 text-sm">Esperado: 15 Mar 2026</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 6: Pending -->
+                            <div class="relative flex gap-6 opacity-60">
+                                <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <i data-lucide="home" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <div class="flex-1 pt-2">
+                                    <h4 class="font-bold text-gray-600">Arribo a Asunción</h4>
+                                    <p class="text-gray-500 text-sm">Programado según ETA</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cargo Details -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 slide-in">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600"></i>
+                        Detalles de la Carga
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Número de Guía</span>
+                                <span class="font-mono font-semibold text-gray-800">PY-2026-001948</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Tipo de Contenedor</span>
+                                <span class="font-semibold text-gray-800">20' DV Standard</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Peso Bruto</span>
+                                <span class="font-semibold text-gray-800">18,450 kg</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Volumen</span>
+                                <span class="font-semibold text-gray-800">33.2 CBM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Naviera</span>
+                                <span class="font-semibold text-gray-800">MSC Mediterranean</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Buque</span>
+                                <span class="font-semibold text-gray-800">MSC GULSUN</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Incoterm</span>
+                                <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded font-semibold text-sm">CIF</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500">Seguro</span>
+                                <span class="font-semibold text-green-600 flex items-center gap-1">
+                                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                    Cubierto (110% CIF)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: ETA Card & Map -->
+            <div class="space-y-6">
+                
+                <!-- ETA Card (Optimized from original) -->
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl shadow-xl p-6 text-white relative overflow-hidden slide-in">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="clock" class="w-5 h-5 text-blue-200"></i>
+                            <span class="text-blue-100 text-sm font-medium tracking-wider uppercase">Estimación de Arribo (ETA)</span>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h2 id="eta-date" class="text-3xl md:text-4xl font-bold mb-1">Cargando...</h2>
+                            <p class="text-blue-200 text-sm">Fecha estimada de llegada a Puerto de Asunción</p>
+                        </div>
+                        
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-blue-100 text-xs uppercase tracking-wider mb-1">Días Restantes Estimados</p>
+                                    <div class="flex items-baseline gap-1">
+                                        <span id="days-left" class="text-4xl font-bold">--</span>
+                                        <span class="text-blue-200">días</span>
+                                    </div>
+                                </div>
+                                <div class="bg-white/20 p-3 rounded-lg">
+                                    <i data-lucide="calendar-clock" class="w-8 h-8 text-white"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3 w-full bg-blue-900/50 rounded-full h-1.5">
+                                <div id="progress-bar" class="bg-orange-400 h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-blue-200 mt-2">Plazo contractual: 40-60 días desde embarque</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route Map Simulation -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden slide-in">
+                    <div class="relative h-64 bg-gray-100">
+                        <img src="https://static.photos/aerial/600x400/10" alt="Route Map" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                            <div class="text-white">
+                                <p class="text-sm font-medium">Ruta: Shanghai → Buenos Aires → Asunción</p>
+                                <p class="text-xs opacity-80">Distancia total: ~11,400 millas náuticas</p>
+                            </div>
+                        </div>
+                        <!-- Animated Route Points -->
+                        <div class="absolute top-1/4 left-1/4 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <div class="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-75"></div>
+                        <div class="absolute bottom-1/3 right-1/4 w-3 h-3 bg-orange-500 rounded-full animate-pulse delay-150"></div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-800 mb-2">Ruta del Transporte</h4>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="text-center">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mx-auto mb-1"></div>
+                                <span class="text-gray-600">Shanghai</span>
+                            </div>
+                            <div class="flex-1 mx-2 h-0.5 bg-gray-300 relative">
+                                <div class="absolute inset-0 bg-blue-500" style="width: 60%"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full mx-auto mb-1"></div>
+                                <span class="text-gray-600">B. Aires</span>
+                            </div>
+                            <div class="flex-1 mx-2 h-0.5 bg-gray-300"></div>
+                            <div class="text-center">
+                                <div class="w-2 h-2 bg-orange-500 rounded-full mx-auto mb-1"></div>
+                                <span class="text-gray-600">Asunción</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 slide-in">
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                        Documentos
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition group">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-digit" class="w-5 h-5 text-red-500"></i>
+                                <span class="text-sm font-medium text-gray-700">Bill of Lading (BL)</span>
+                            </div>
+                            <i data-lucide="download" class="w-4 h-4 text-gray-400 group-hover:text-blue-600"></i>
+                        </button>
+                        <button class="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition group">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-box" class="w-5 h-5 text-blue-500"></i>
+                                <span class="text-sm font-medium text-gray-700">Packing List</span>
+                            </div>
+                            <i data-lucide="download" class="w-4 h-4 text-gray-400 group-hover:text-blue-600"></i>
+                        </button>
+                        <button class="w-full flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition group">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-spreadsheet" class="w-5 h-5 text-green-500"></i>
+                                <span class="text-sm font-medium text-gray-700">Factura Comercial</span>
+                            </div>
+                            <i data-lucide="download" class="w-4 h-4 text-gray-400 group-hover:text-blue-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 mt-16 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4 text-white">
+                        <i data-lucide="globe" class="w-6 h-6"></i>
+                        <span class="text-xl font-bold">GLOBAL LOGISTICS</span>
+                    </div>
+                    <p class="text-sm text-gray-400">Soluciones integrales de transporte internacional. Conectando mercados, entregando confianza.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Servicios</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition">Transporte Marítimo</a></li>
+                        <li><a href="#" class="hover:text-white transition">Carga Aérea</a></li>
+                        <li><a href="#" class="hover:text-white transition">Logística Terrestre</a></li>
+                        <li><a href="#" class="hover:text-white transition">Almacenaje</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Herramientas</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition">Rastreo de Carga</a></li>
+                        <li><a href="#" class="hover:text-white transition">Cotizaciones</a></li>
+                        <li><a href="#" class="hover:text-white transition">Calculadora de Incoterms</a></li>
+                        <li><a href="#" class="hover:text-white transition">Documentación</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-500">&copy; 2026 Global Logistics Paraguay S.A. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ETA Calculation Logic (Optimized from original)
+        function calcularETA() {
+            // Fecha de la factura/embarque: 19 de enero de 2026
+            const fechaFactura = new Date('2026-01-19');
+            const hoy = new Date('2026-02-14'); // Fecha actual simulada según contexto
+            
+            // Estimación de 60 días máximo (plazo contractual CIF)
+            const diasMaximos = 60;
+            const fechaETA = new Date(fechaFactura);
+            fechaETA.setDate(fechaFactura.getDate() + diasMaximos);
+            
+            // Formatear fecha para mostrar en español
+            const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('eta-date').innerText = fechaETA.toLocaleDateString('es-ES', opciones);
+            
+            // Calcular días restantes desde hoy hasta ETA
+            const diferenciaMilisegundos = fechaETA - hoy;
+            const diasRestantes = Math.ceil(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+            
+            const daysElement = document.getElementById('days-left');
+            const progressBar = document.getElementById('progress-bar');
+            
+            if (diasRestantes > 0) {
+                daysElement.innerText = diasRestantes;
+                // Calcular progreso: (60 - diasRestantes) / 60 * 100
+                const progreso = Math.min(100, Math.max(0, ((60 - diasRestantes) / 60) * 100));
+                setTimeout(() => {
+                    progressBar.style.width = progreso + '%';
+                }, 500);
+            } else if (diasRestantes === 0) {
+                daysElement.innerText = "Hoy";
+                progressBar.style.width = '100%';
+                progressBar.classList.remove('bg-orange-400');
+                progressBar.classList.add('bg-green-400');
+            } else {
+                daysElement.innerText = "En Aduana";
+                daysElement.classList.add('text-orange-300');
+                progressBar.style.width = '100%';
+                progressBar.classList.remove('bg-orange-400');
+                progressBar.classList.add('bg-yellow-400');
+            }
+        }
+
+        // Refresh animation
+        function refreshTracking() {
+            const btn = document.querySelector('button[onclick="refreshTracking()"]');
+            const icon = btn.querySelector('i');
+            icon.classList.add('animate-spin');
+            
+            // Simulate refresh
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                // Recalculate with current date for demo
+                calcularETA();
+                
+                // Show notification
+                showNotification('Información actualizada correctamente');
+            }, 1500);
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-xl z-50 flex items-center gap-2 slide-in';
+            notif.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i><span>${message}</span>`;
+            document.body.appendChild(notif);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                notif.remove();
+            }, 3000);
+        }
+
+        // Execute on load
+        window.onload = function() {
+            calcularETA();
+            lucide.createIcons();
+        };
+
+        // Simulate real-time updates every 30 seconds
+        setInterval(() => {
+            // Update timestamps to feel "live"
+            const now = new Date();
+            // This would normally fetch from API
+        }, 30000);
+    </script>
+</body>
+</html>
